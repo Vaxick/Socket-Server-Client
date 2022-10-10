@@ -107,7 +107,7 @@ ___
 
 ## *4.1) Compilazione e lancio del codice*
 
-Link Makefile: [***Makefile***](../Src/Makefile)
+Link Makefile: [***Makefile***](../Src/makefile)
 
 Per compilare il codice si utilizza:
 ```makefile
