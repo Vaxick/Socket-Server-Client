@@ -1,6 +1,6 @@
 /**
  * @file server.echo.c
- * @author Andrei Ursu
+ * @author Andrei Ursu e Alessio Mucchi
  * @brief File C per simulare un server echo con i socket
  * @version Latest
  * @date 2022-10-01
