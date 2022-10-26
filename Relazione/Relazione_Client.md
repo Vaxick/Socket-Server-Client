@@ -34,7 +34,6 @@ Define utilizzati nel codice:
 #define MAX_PROMPT_LENGTH ((int)256)
 ```
 ___
-
 All'interno del main:
 
 Controlliamo che l'utente abbia inserito il corretto numero di parametri associato ad argv
@@ -68,7 +67,6 @@ Inizializiamo il socket client:
 ```
 
 ___
-
 Definiamo la configurazione per il client e per il server:
 ```c
 clientConf.sin_family = AF_INET;
@@ -81,8 +79,6 @@ serverConf.sin_port = htons(serverPort);
 ```
 
 ___
-
-
 `Leghiamo` le configuarioni del client al socket client
 
 Se la bind fallisce il programma quitta:
@@ -94,7 +90,6 @@ if (bind(socketClient, (struct sockaddr *)&clientConf, sizeof(clientConf)) == SO
 ```
 
 ___
-
 Colleghiamo il socket client al server, in caso di successo stamperà un messaggio:
 ```c
 if (connect(socketClient, (struct sockaddr *)&serverConf, sizeof(serverConf)) == SOCKET_ERROR) {
@@ -106,7 +101,6 @@ if (connect(socketClient, (struct sockaddr *)&serverConf, sizeof(serverConf)) ==
 ```
 
 ___
-
 Leggiamo il messaggio di benvenuto inviato dal server, se la lettura fallisce il programma avviserà l'utente e quitterà:
 ```c
  if (read(socketClient, buffer, sizeof(buffer)) != SOCKET_ERROR) {
@@ -120,14 +114,12 @@ Leggiamo il messaggio di benvenuto inviato dal server, se la lettura fallisce il
 ```
 
 ___
-
 Simula il telnet del client:
 ```c
 telnetClient(socketClient);
 ```
 
 ___
-
 Viene letto il messaggio di termine inviato dal server, se fallisce la lettura il programma avviserà l'utente e quitterà:
 ```c
  if (read(socketClient, buffer, sizeof(buffer)) != SOCKET_ERROR) {
@@ -141,7 +133,6 @@ Viene letto il messaggio di termine inviato dal server, se fallisce la lettura i
 ```
 
 ___
-
 Chiudiamo il socket:
 ```c
  printf("\nsocket::close\n");
@@ -151,7 +142,6 @@ Chiudiamo il socket:
 ```
 
 ___
-
 All'interno del TelnetClient:
 
 Creo le variabili che mi serviranno nella funzione:
@@ -161,7 +151,6 @@ char prompted, recvChar;
 ```
 
 ___
-
 All'interno di un ciclo do_while viene svolto il grosso del lavoro, ovvero tramite un loop continua a ricevere i dati dal server e aspettare, terminando solo quando il client invia il carattere `END_RECV`
 ```c
 do{
@@ -195,7 +184,43 @@ do{
 free(prompt);
 ```
 ___
+## *4.1) Compilazione e lancio del codice*
+Per creare gli eseguibili:
+```c
+build:
+	gcc -o $(server_executible) $(server_file)
+	gcc -o $(client_executible) $(client_file)
+```
 
+___
+Per rimuovere gli eseguibili:
+```c
+clean:
+	rm $(server_executible) $(client_executible)
+```
+
+___
+Per avviare il server:
+```c
+start:
+	./$(server_executible)
+```
+
+___
+Per connettersi al server:
+```c
+connect:
+	./$(client_executible) $(host) $(port)
+```
+
+___
+Per liberare la porta se è occupata:
+```c
+free:
+	sudo kill -9 `sudo lsof -t -i:$(port)`
+```
+
+___
 ## *5) Testing*
 
 
