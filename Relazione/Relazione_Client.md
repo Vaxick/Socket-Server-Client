@@ -194,3 +194,11 @@ do{
 }while((int)recvChar != END_RECV);
 free(prompt);
 
+___
+
+## *5) Testing*
+
+
+## *6) Conclusioni*
+In questa esercitazione ho imparato a creare un client echo tramite il socket e a gestire le connessioni.
+
