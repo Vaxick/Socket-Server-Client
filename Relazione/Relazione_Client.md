@@ -193,5 +193,4 @@ do{
     }
 }while((int)recvChar != END_RECV);
 free(prompt);
-___
 
