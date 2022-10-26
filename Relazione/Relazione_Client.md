@@ -34,7 +34,7 @@ Define utilizzati nel codice:
 #define MAX_PROMPT_LENGTH ((int)256)
 ```
 ___
-All'interno del main:
+`All'interno del main:`
 
 Controlliamo che l'utente abbia inserito il corretto numero di parametri associato ad argv
 
@@ -142,7 +142,7 @@ Chiudiamo il socket:
 ```
 
 ___
-All'interno del TelnetClient:
+`All'interno del TelnetClient:`
 
 Creo le variabili che mi serviranno nella funzione:
 ```c
