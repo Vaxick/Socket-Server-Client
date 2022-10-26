@@ -1,4 +1,5 @@
-# Socket-Server
-Socket echo server in C
+# ***Socket-Server && Socket-Client***
 
-[**Link Relazione**](/Relazione/Relazione.md)
+## [**Link Relazione Socket Server**](/Relazione/Relazione_Server.md)
+
+## [**Link Relazione Socket Client**](/Relazione/Relazione_Client.md)

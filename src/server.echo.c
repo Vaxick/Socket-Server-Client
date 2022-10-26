@@ -99,14 +99,14 @@ int main(unsigned argc, char *argv[]){
     do {
         if (recv(commSocket, &readASCII, 1, 0) != SOCKET_ERROR) {
             asciiVal = (int)readASCII;
-            if (asciiVal != RETURN && asciiVal != QUIT){
+            if (asciiVal != RETURN){
                 //Messaggio dei dati ricevuti dal client
                 if(isprint(asciiVal)){
                     printf("RECV:[%c][%d] Echoing..\n", readASCII, asciiVal);
                 }
                 else printf("RECV:[%d][%d] Echoing..\n", readASCII, asciiVal);
                 //Echo dei dati ricevuti dal client al client
-                send( commSocket , &readASCII, 1, 0);
+                send( commSocket , &asciiVal, 1, 0);
             }
         }
         else{
