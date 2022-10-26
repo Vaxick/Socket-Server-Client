@@ -1,6 +1,6 @@
 #Eseguibili
-server_executible=server.echo.o
-client_executible=client.echo.o
+server_executible=server.echo.exe
+client_executible=client.echo.exe
 
 #File.c
 server_file=server.echo.c
