@@ -20,12 +20,16 @@ Lo scopo di questa esercitazione è quello di creare un client echo utilizzando 
 ___
 Il codice in certi punti è stato sviante, quindi voleva fare cose fondalmentalmente sbagliate, come ad esempio utilizzare 2 socket, uno del client e uno del server, invece di utilizzare esclusivamente il socket del client.
 
-Un'altro caso è stato un fake FIXME alla conversione da stringa a intero tramite un atoi
+Un'altro caso è stato un fake `FIXME` alla conversione da stringa a intero tramite un atoi
 
-Definita una variabile SOCKET_PORT, che non è corretta siccome la porta la si inserisce al momento dell'esecuzione del programma.
+Definita una variabile `SOCKET_PORT`, che non è corretta siccome la porta la si inserisce al momento dell'esecuzione del programma.
 
-## *4) Codice*
-In questo esercizio ho utilizzato la libreria `sys/socket.h` per la gestione dei socket e la libreria `netinet/in.h` per la famiglia dei socket.
+### *3.2) Criticità: Architettura*
+___
+A differenza del server la cui unica criticità era l'impossibilità di permettere a più client di connettersi contemporaneamente, il client non ha avuto difetti funzionali.
+
+## *4) [Codice](../src/client.echo.c)*
+In questo esercizio sono state utilizzate le librerie `sys/socket.h` per la gestione dei socket, `netinet/in.h` per la famiglia dei socket, in particolare `AF_INET` e `SOCK_STREAM`, e `ctype.h` per il controllo dei caratteri.
 
 Define utilizzati nel codice:
 ```c
@@ -36,9 +40,8 @@ Define utilizzati nel codice:
 ___
 `All'interno del main:`
 
-Controlliamo che l'utente abbia inserito il corretto numero di parametri associato ad argv
+Controlliamo che l'utente abbia inserito tutti i parametri al lancio del programma, in caso contrario stampiamo un messaggio di errore e terminiamo il programma.
 
-In caso contrario il programma avvisa l'utente e quitta:
 ```c
 if (argc < 3) {
     fprintf(stderr, "Usage: %s <server ip> <server port>\n", argv[0]);
@@ -47,7 +50,7 @@ if (argc < 3) {
 ```
 
 ___
-Impostiamo i parametri per permettere la connessione col server tramite il socket:
+Inseriamo nelle variabili i dati ricevuti all'avvio, per la creazione del socket, e creiamo le variabili per la gestione del socket.
 ```c
 char *serverAddress = argv[1];
 int serverPort = atoi(argv[2]);
@@ -57,7 +60,7 @@ int socketClient;
 ```
 
 ___
-Inizializiamo il socket client:
+Inizializiamo il socket per il client:
 ```c
  if((socketClient = socket(AF_INET, SOCK_STREAM, 0)) == SOCKET_ERROR) {
     perror("socket");
@@ -65,9 +68,10 @@ Inizializiamo il socket client:
 }
 
 ```
-
 ___
-Definiamo la configurazione per il client e per il server:
+Inizializziamo la struttura per la configurazione del socket:
+I dati in clientConf, servono per la configurazione del socket, mentre serverConf servono per la connessione al server.
+
 ```c
 clientConf.sin_family = AF_INET;
 clientConf.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -79,7 +83,7 @@ serverConf.sin_port = htons(serverPort);
 ```
 
 ___
-`Leghiamo` le configuarioni del client al socket client
+`Leghiamo` i dati del client al socket:
 
 Se la bind fallisce il programma quitta:
 ```c
@@ -90,7 +94,7 @@ if (bind(socketClient, (struct sockaddr *)&clientConf, sizeof(clientConf)) == SO
 ```
 
 ___
-Colleghiamo il socket client al server, in caso di successo stamperà un messaggio:
+Avviamo la connessione al server:
 ```c
 if (connect(socketClient, (struct sockaddr *)&serverConf, sizeof(serverConf)) == SOCKET_ERROR) {
         perror("connect");
@@ -99,8 +103,8 @@ if (connect(socketClient, (struct sockaddr *)&serverConf, sizeof(serverConf)) ==
     else printf("Connection established with the server [%s:%d]\n", serverAddress, serverPort);
 
 ```
-
 ___
+
 Leggiamo il messaggio di benvenuto inviato dal server, se la lettura fallisce il programma avviserà l'utente e quitterà:
 ```c
  if (read(socketClient, buffer, sizeof(buffer)) != SOCKET_ERROR) {
@@ -113,10 +117,9 @@ Leggiamo il messaggio di benvenuto inviato dal server, se la lettura fallisce il
     }
 ```
 
-___
-Simula il telnet del client:
+Avviamo la funzione per la simulazione del telnet:
 ```c
-telnetClient(socketClient);
+telnet(socketClient);
 ```
 
 ___
@@ -151,7 +154,14 @@ char prompted, recvChar;
 ```
 
 ___
-All'interno di un ciclo do_while viene svolto il grosso del lavoro, ovvero tramite un loop continua a ricevere i dati dal server e aspettare, terminando solo quando il client invia il carattere `END_RECV`
+All'interno di un ciclo do_while viene svolto il grosso del lavoro, ovvero tramite un loop continua a chiedere all'utente di inserire un messaggio, e lo invia al server carattere per carattere, poi attende la risposta da parte del server e la stampa.
+
+
+Prima della stampa viene controllato che il carattere ricevuto sia stampabile, in caso contrario viene stampato il suo codice ascii.
+
+
+Il tutto termina quando il client riceve come echo il carattere `esc`.
+
 ```c
 do{
     printf("Send msg: (esc) to end transmission\n");
@@ -185,10 +195,25 @@ free(prompt);
 ```
 ___
 ## *4.1) Compilazione e lancio del codice*
-Link Makefile:
+Link [**Makefile**](../src/makefile):
+
+Definizioni:
+```makefile
+#Eseguibili
+server_executible=server.echo.exe
+client_executible=client.echo.exe
+
+#File.c
+server_file=server.echo.c
+client_file=client.echo.c
+
+#Informazioni Server
+host=127.0.0.1
+port=5000
+```
 
 Per creare gli eseguibili:
-```c
+```makefile
 build:
 	gcc -o $(server_executible) $(server_file)
 	gcc -o $(client_executible) $(client_file)
@@ -196,28 +221,28 @@ build:
 
 ___
 Per rimuovere gli eseguibili:
-```c
+```makefile
 clean:
 	rm $(server_executible) $(client_executible)
 ```
 
 ___
 Per avviare il server:
-```c
+```makefile
 start:
 	./$(server_executible)
 ```
 
 ___
 Per connettersi al server:
-```c
+```makefile
 connect:
 	./$(client_executible) $(host) $(port)
 ```
 
 ___
 Per liberare la porta se è occupata:
-```c
+```makefile
 free:
 	sudo kill -9 `sudo lsof -t -i:$(port)`
 ```
@@ -225,7 +250,7 @@ free:
 ___
 ## *5) Testing*
 
+La fase di testing non ha dato problemi apparenti, l'unico difetto sorto è stata una dimenticanza in server.echo.c, dove non veniva reinviato il carattere `esc` ricevuto al client, quindi il client non terminava la connessione, per risolvere questo problema ho levato il controllo del carattere `esc` dal ciclo while del server.
 
 ## *6) Conclusioni*
-In questa esercitazione ho imparato a creare un client echo tramite il socket e a gestire le connessioni.
-
+In questa esercitazione ho imparato a creare un client echo con i socket e a gestire la connessione al server echo, entrambi utilizzando il protocollo `TCP`.

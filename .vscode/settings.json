@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.gradle": "java",
+        "ctype.h": "c"
+    }
+}
