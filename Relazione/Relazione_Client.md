@@ -34,7 +34,7 @@ In questo esercizio sono state utilizzate le librerie `sys/socket.h` per la gest
 Define utilizzati nel codice:
 ```c
 #define SOCKET_ERROR ((int)-1)
-#define END_RECV ((int)-27)
+#define END_RECV ((int)27)
 #define MAX_PROMPT_LENGTH ((int)256)
 ```
 ___

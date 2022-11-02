@@ -32,7 +32,7 @@
  * @param MAX_PROMPT_LENGTH - max length of the prompt
  */
 #define SOCKET_ERROR ((int)-1)
-#define END_RECV ((int)-27)
+#define END_RECV ((int)27)
 #define MAX_PROMPT_LENGTH ((int)256)
 
 /**
