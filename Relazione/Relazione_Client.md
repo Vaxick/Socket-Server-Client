@@ -252,5 +252,7 @@ ___
 
 La fase di testing non ha dato problemi apparenti, l'unico difetto sorto è stata una dimenticanza in server.echo.c, dove non veniva reinviato il carattere `esc` ricevuto al client, quindi il client non terminava la connessione, per risolvere questo problema ho levato il controllo del carattere `esc` dal ciclo while del server.
 
+![Test](./scr.png)
+
 ## *6) Conclusioni*
 In questa esercitazione ho imparato a creare un client echo con i socket e a gestire la connessione al server echo, entrambi utilizzando il protocollo `TCP`.
